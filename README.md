@@ -7,8 +7,8 @@ permalink: about.html
 Tech posts from my projects. Each post lives in its project repo as `POST.it.md` and `POST.en.md`, and gets published here automatically by a GitHub Action.
 
 - Theme: [leonids](https://github.com/bilardi/leonids) (Jekyll)
-- Automation: [publish.yml](.github/workflows/publish.yml)
-- Sources: [sources.yml](sources.yml)
+- Automation: [publish.yml](https://github.com/bilardi/diary/blob/master/.github/workflows/publish.yml)
+- Sources: [sources.yml](https://github.com/bilardi/diary/blob/master/sources.yml)
 
 ## Publishing
 
