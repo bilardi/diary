@@ -22,7 +22,7 @@ for post_file in _posts/*.en.md; do
   # Build canonical URL from permalink pattern: /articles/YYYY-MM/title
   slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
   year_month=$(echo "$date" | cut -d- -f1-2)
-  canonical_url="${SITE_URL}/articles/${year_month}/${slug}"
+  canonical_url="${SITE_URL}/articles/${year_month}/${slug}.en"
 
   # Extract body (everything after second ---)
   body=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$post_file")
