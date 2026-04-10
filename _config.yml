@@ -10,7 +10,7 @@ url: https://alessandra.bilardi.net
 baseurl: /diary
 repository-forked: http://github.com/bilardi/leonids/
 favicon:
-  - https://s3-eu-west-1.amazonaws.com/cdn.bilardi.net/favicon.ico
+  - https://s3.eu-west-1.amazonaws.com/cdn.bilardi.net/diary/favicon.ico
 keywords: ["blog", "jekyll", "diary", "developer"]
 meta:
   twitter-image: https://s3-eu-west-1.amazonaws.com/cdn.bilardi.net/alessandra/index/glider.3d.png
