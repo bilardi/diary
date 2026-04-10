@@ -3,7 +3,7 @@ layout: post
 title: "Docker on EC2 with Terraform"
 date: 2026-04-10
 categories: [devops]
-tags: [terraform, docker, aws, ec2, iac]
+tags: [terraform, docker, aws, ec2]
 repo: bilardi/aws-docker-host
 lang: en
 ---
