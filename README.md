@@ -2,7 +2,7 @@
 layout: page
 permalink: about.html
 ---
-# Diary of a lazy developer
+#### Diary of a lazy developer
 
 Tech posts from my projects. Each post lives in its project repo as `POST.it.md` and `POST.en.md`, and gets published here automatically by a GitHub Action.
 
