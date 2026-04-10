@@ -34,13 +34,8 @@ EN posts are cross-posted automatically. All secrets go in repo Settings > Secre
 
 ### Mastodon (public post with image)
 
-1. On mastodon.social: Settings > Development > New Application > generate access token
-2. Secret: `MASTODON_ACCESS_TOKEN`
-
-### Twitter/X (public tweet with image)
-
-1. On developer.twitter.com: create App > Keys and tokens
-2. Secrets: `TWITTER_API_KEY`, `TWITTER_API_SECRET`, `TWITTER_ACCESS_TOKEN`, `TWITTER_ACCESS_SECRET`
+1. On mastodon.social: Settings > Development > New Application > select read, write and profile
+2. Copy the token: `MASTODON_ACCESS_TOKEN`
 
 ## Development
 
