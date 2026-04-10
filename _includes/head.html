@@ -24,12 +24,12 @@
   <meta name="twitter:title" content="{{ title | escape }}">
   <meta name="twitter:description" content="{{ description | escape }}">
   {% if page.image.feature %}
-    <meta property="twitter:image" content="{{ site.url }}/img/{{ page.image.feature }}">
+    <meta property="twitter:image" content="{{ site.url }}{{ site.baseurl }}/img/{{ page.image.feature }}">
   {% else %}
     {% if site.meta.twitter-image contains 'https' or site.meta.twitter-image contains 'http' %}
     <meta property="twitter:image" content="{{ site.meta.twitter-image }}">
     {% else %}
-    <meta property="twitter:image" content="{{ site.url }}/img/{{ site.meta.twitter-image }}">
+    <meta property="twitter:image" content="{{ site.url }}{{ site.baseurl }}/img/{{ site.meta.twitter-image }}">
     {% endif %}
   {% endif %}
 
@@ -39,12 +39,12 @@
   <meta property="og:title" content="{{ title | escape }}">
   <meta property="og:description" content="{{ description | escape }}">
   {% if page.image.feature %}
-    <meta property="og:image" content="{{ site.url }}/img/{{ page.image.feature }}">
+    <meta property="og:image" content="{{ site.url }}{{ site.baseurl }}/img/{{ page.image.feature }}">
   {% else %}
     {% if site.meta.og-image contains 'https' or site.meta.og-image contains 'http' %}
     <meta property="og:image" content="{{ site.meta.og-image }}">
     {% else %}
-    <meta property="og:image" content="{{ site.url }}/img/{{ site.meta.og-image }}">
+    <meta property="og:image" content="{{ site.url }}{{ site.baseurl }}/img/{{ site.meta.og-image }}">
     {% endif %}
   {% endif %}
   <title>{{ title }}</title>
@@ -54,8 +54,8 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/v4-shims.css">
   <link rel="stylesheet" href="{{ site.url }}{{ site.baseurl }}/css/main.css">
 
-  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.url }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }}" href="{{ "/feed.xml" | prepend: site.url }}" />
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
 
   <!-- Icons -->
   {% if site.favicon %}

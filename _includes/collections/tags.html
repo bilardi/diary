@@ -1,9 +1,10 @@
   <div class="tag-group">
     {% capture tag_name %}{{ col | first }}{% endcapture %}
     <h5 class="tag-group-title" id="{{ tag_name | slugize }}">{{ tag_name }}</h5>
-    {% for post in site.tags[tag_name] %}
+    {% assign en_tagged = site.tags[tag_name] | where: "lang", "en" %}
+    {% for post in en_tagged %}
     <article class="tag-item">
-      <a class="tag-item-title" href="{{ site.url }}{{ post.url }}">{{post.title}}</a>
+      <a class="tag-item-title" href="{{ site.url }}{{ site.baseurl }}{{ post.url }}">{{post.title}}</a>
       <span class="post-meta">
         {% include cat_and_tag.html hide-cat=site.collection.tags.hide-on-categories btn-cat=site.collection.tags.btn-on-categories hide-tag=true detail=post %}
       </span>

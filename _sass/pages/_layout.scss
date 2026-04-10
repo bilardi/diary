@@ -94,6 +94,7 @@
     zoom: 1;
     &:after {
       content: '/';
+      color: $author-color;
     }
     &:last-child:after {
       content: '';

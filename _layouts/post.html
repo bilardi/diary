@@ -11,7 +11,7 @@ layout: default
   {% if page.image.feature contains 'https' or page.image.feature contains 'http' %}
   "{{ page.image.feature }}"
   {% else %}
-  "{{ site.url }}/img/{{ page.image.feature }}"
+  "{{ site.url }}{{ site.baseurl }}/img/{{ page.image.feature }}"
   {% endif %}
   alt="{{ page.title | escape }} feature image">
 
@@ -60,7 +60,7 @@ layout: default
         {% assign twins = site.posts | where: "repo", page.repo | where: "lang", twin_lang %}
         {% assign twin_post = twins | first %}
         {% if twin_post %}
-          <span class="post-lang"><a href="{{ twin_post.url | prepend: site.baseurl }}">[{{ twin_lang | upcase }}]</a></span>
+          <span class="post-lang">[<a href="{{ twin_post.url | prepend: site.baseurl }}">{{ twin_lang | upcase }}</a>]</span>
         {% endif %}
       {% endif %}
   </header>

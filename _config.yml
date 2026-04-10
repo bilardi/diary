@@ -26,10 +26,10 @@ navigation:
   hide-on-post: false
   left:
     icon: fa-arrow-left
-    color: danger
+    color: warning
   home:
     icon: fa-home
-    color: warning
+    color: danger
   right:
     icon: fa-arrow-right
     color: success
