@@ -35,3 +35,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "chore: update posts from source repos"
           git push
+
+      - name: Publish drafts to dev.to
+        if: env.DEV_TO_API_KEY != ''
+        env:
+          DEV_TO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
+        run: bash .github/workflows/devto-publish.sh

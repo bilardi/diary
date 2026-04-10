@@ -10,6 +10,16 @@ Tech posts from my projects. Each post lives in its project repo as `POST.it.md`
 - Automation: [publish.yml](.github/workflows/publish.yml)
 - Sources: [sources.yml](sources.yml)
 
+## Cross-posting
+
+EN posts are published as drafts on [dev.to](https://dev.to) with canonical URL pointing to this blog.
+
+Setup:
+
+1. On dev.to: Settings > Extensions > DEV Community API Keys > Generate API Key
+2. On GitHub: repo Settings > Secrets and variables > Actions > New repository secret
+3. Name: `DEV_TO_API_KEY`, Value: the key from step 1
+
 ## Development
 
 ```sh
