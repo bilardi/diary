@@ -21,7 +21,8 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet HEAD -- _posts/; then
+          git add _posts/
+          if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -32,6 +33,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add _posts/
           git commit -m "chore: update posts from source repos"
           git push
