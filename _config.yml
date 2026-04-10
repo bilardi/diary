@@ -1,0 +1,159 @@
+#
+###################################
+# Site wide configuration
+####################################
+#
+title: diary of a lazy developer
+email:
+description: Post tecnici dai miei progetti
+url: https://alessandra.bilardi.net
+baseurl: /diary
+repository-forked: http://github.com/bilardi/leonids/
+favicon:
+  - https://s3-eu-west-1.amazonaws.com/cdn.bilardi.net/favicon.ico
+keywords: ["blog", "jekyll", "diary", "developer"]
+meta:
+  twitter-image: https://s3-eu-west-1.amazonaws.com/cdn.bilardi.net/alessandra/index/glider.3d.png
+  og-image: https://s3-eu-west-1.amazonaws.com/cdn.bilardi.net/alessandra/index/glider.3d.png
+home:
+  hide-on-sidebar: true
+readme:
+  hide-on-sidebar: false
+  title: about
+  url: about.html
+navigation:
+  hide-on-sidebar: false
+  hide-on-post: false
+  left:
+    icon: fa-arrow-left
+    color: danger
+  home:
+    icon: fa-home
+    color: warning
+  right:
+    icon: fa-arrow-right
+    color: success
+collection:
+  categories:
+    class: cat
+    hide-on-post: false
+    btn-on-post: false
+    hide-on-archive: true
+    btn-on-archive: true
+    hide-on-tags: true
+    btn-on-tags: true
+  tags:
+    class: tag
+    hide-on-post: false
+    btn-on-post: false
+    hide-on-archive: true
+    btn-on-archive: true
+    hide-on-categories: true
+    btn-on-categories: true
+resume:
+  hide-routines: false
+  hide-projects: false
+  hide-skills: false
+
+#
+###################################
+# Jekyll configuration
+####################################
+#
+timezone:          Europe/Rome
+markdown:          kramdown
+highlighter:       rouge
+excerpt_separator: <!--more-->
+permalink:         /articles/:year-:month/:title
+
+kramdown:
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  enable_coderay: false
+
+plugins:
+  - jekyll-redirect-from
+
+#
+###################################
+# Site Owner configuration
+####################################
+#
+owner:
+  name: diary of a lazy developer
+  author:
+    name: Alessandra Bilardi
+    link: https://alessandra.bilardi.net/
+  avatar:
+  job:
+  bio:
+  email:
+  disqus-shortname:
+  twitter: abilardi
+  facebook:
+  google:
+    plus:
+    analytics:
+    verify:
+    ad-client:
+    ad-slot:
+  bing-verify:
+  github: bilardi
+  gitlab:
+  stackoverflow: 1472538
+  linkedin: bilardi
+  skype:
+  xing:
+  instagram:
+  lastfm:
+  tumblr:
+  pinterest:
+  foursquare:
+  steam:
+  dribbble:
+  youtube:
+  soundcloud:
+  weibo:
+  flickr:
+  500px:
+  codepen:
+  reddit:
+  telegram:
+  wikipedia: Bilardi
+  custom:
+    - url: https://alessandra.bilardi.net/diary/feed.xml
+      icon: fa-rss
+    - url: https://www.pandle.net/
+      icon: fa-share-alt
+    - url: https://bilardi.github.io/bookmarks/
+      icon: fa-bookmark
+    - url: https://alessandra.bilardi.net/resume/
+      icon: fa-file
+    - url: http://github.com/bilardi/leonids/
+      icon: fa-code-fork
+
+webrick:
+  headers:
+    Access-Control-Allow-Origin: "*"
+
+style:
+  text:
+    color: rgba(0, 0, 0, 0.87)
+  author:
+    color: "#fff"
+  background:
+    color: "#f5f5f5"
+    image: https://s3.eu-west-1.amazonaws.com/cdn.bilardi.net/diary/glider-pattern.svg
+    size: 150px 150px
+  navigation-background:
+    color: "#f6f6f6"
+  color:
+    white: "#fff"
+    primary: "#42b983"
+    secondary: rgba(0, 0, 0, 0.87)
+    success: "#65e892"
+    danger: "#f83e4b"
+    warning: "#F5A623"
+    info: "#09ABF6"

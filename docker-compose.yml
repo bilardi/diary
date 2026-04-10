@@ -1,0 +1,17 @@
+services:
+  jekyll:
+    image: jekyll/jekyll:4.2.0
+    command: jekyll serve --watch --incremental
+    ports:
+      - 4000:4000
+    volumes:
+      - ${PWD}:/srv/jekyll:Z
+      - jekyll_cache:/srv/jekyll/.jekyll-cache:Z
+      - jekyll_site:/srv/jekyll/_site
+    environment:
+      JEKYLL_UID: ${UID:-1000}
+      JEKYLL_GID: ${GID:-1000}
+
+volumes:
+  jekyll_cache:
+  jekyll_site:

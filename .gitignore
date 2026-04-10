@@ -1,0 +1,9 @@
+*#*
+*~
+.jekyll-cache
+.jekyll-metadata
+.sass-cache
+Gemfile.lock
+_posts/*.md
+!_posts/.gitkeep
+_site

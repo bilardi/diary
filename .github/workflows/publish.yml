@@ -1,0 +1,37 @@
+name: Publish posts
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout diary
+        uses: actions/checkout@v4
+
+      - name: Collect and publish posts
+        run: bash .github/workflows/collect-posts.sh
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet HEAD -- _posts/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _posts/
+          git commit -m "chore: update posts from source repos"
+          git push
