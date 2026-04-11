@@ -41,6 +41,7 @@ echo "Buffer organization: ${org_id}"
 
 # Get channels
 channels_json=$(gql "query { channels(input: { organizationId: \"${org_id}\" }) { id name service } }")
+echo "DEBUG channels response: $(echo "$channels_json" | head -c 300)"
 echo "Buffer channels:"
 echo "$channels_json" | python3 -c "
 import sys, json
