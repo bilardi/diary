@@ -122,7 +122,14 @@ for post_file in _posts/*.en.md; do
   hashtags=$(echo "$tags" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | sed 's/^/#/' | tr '\n' ' ')
 
   # Extract social_summary if available
-  social_summary=$(sed -n 's/^social_summary: *"\(.*\)"/\1/p' "$post_file" | head -1 | sed 's/\\n/\n/g')
+  social_summary=$(python3 -c "
+import sys
+for line in open('${post_file}'):
+    if line.startswith('social_summary:'):
+        val = line.split(':', 1)[1].strip().strip('\"')
+        print(val.replace('\\\\n', '\n'))
+        break
+" 2>/dev/null || true)
 
   # Long text for LinkedIn/Threads
   if [ -n "$social_summary" ]; then
