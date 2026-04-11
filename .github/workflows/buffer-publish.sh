@@ -14,7 +14,10 @@ BUFFER_API="https://api.bufferapp.com/1"
 SITE_URL="https://alessandra.bilardi.net/diary"
 
 # Get all profile IDs
-profiles=$(curl -s "${BUFFER_API}/profiles.json?access_token=${BUFFER_ACCESS_TOKEN}")
+AUTH_HEADER="Authorization: Bearer ${BUFFER_ACCESS_TOKEN}"
+
+profiles=$(curl -s -H "${AUTH_HEADER}" "${BUFFER_API}/profiles.json")
+echo "DEBUG profiles response: $(echo "$profiles" | head -c 200)"
 profile_ids=$(echo "$profiles" | python3 -c "
 import sys, json
 profiles = json.load(sys.stdin)
@@ -55,8 +58,8 @@ fi
 # Collect pending and sent URLs across all profiles for dedup
 known_urls=""
 for pid in $all_ids; do
-  pending=$(curl -s "${BUFFER_API}/profiles/${pid}/updates/pending.json?access_token=${BUFFER_ACCESS_TOKEN}&count=100")
-  sent=$(curl -s "${BUFFER_API}/profiles/${pid}/updates/sent.json?access_token=${BUFFER_ACCESS_TOKEN}&count=100")
+  pending=$(curl -s "${BUFFER_API}/profiles/${pid}/updates/pending.json?count=100" -H "${AUTH_HEADER}")
+  sent=$(curl -s "${BUFFER_API}/profiles/${pid}/updates/sent.json?count=100" -H "${AUTH_HEADER}")
   urls=$(echo "$pending" "$sent" | python3 -c "
 import sys, json
 for line in sys.stdin:
@@ -140,7 +143,7 @@ ${canonical_url}
 
     if [ -n "$image_url" ]; then
       response=$(curl -s -w "\n%{http_code}" -X POST "${BUFFER_API}/updates/create.json" \
-        -d "access_token=${BUFFER_ACCESS_TOKEN}" \
+        -H "${AUTH_HEADER}" \
         ${profile_params} \
         --data-urlencode "text=${text}" \
         -d "media[link]=${canonical_url}" \
@@ -148,7 +151,7 @@ ${canonical_url}
         --data-urlencode "media[description]=${title}")
     else
       response=$(curl -s -w "\n%{http_code}" -X POST "${BUFFER_API}/updates/create.json" \
-        -d "access_token=${BUFFER_ACCESS_TOKEN}" \
+        -H "${AUTH_HEADER}" \
         ${profile_params} \
         --data-urlencode "text=${text}" \
         -d "media[link]=${canonical_url}")
