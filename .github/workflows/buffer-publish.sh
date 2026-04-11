@@ -152,44 +152,62 @@ ${canonical_url}
     local channel_id="$2"
     local label="$3"
 
-    # Escape text for GraphQL
-    local escaped_text
-    escaped_text=$(python3 -c "import json; print(json.dumps($( python3 -c "import json; print(json.dumps('''$text'''))" )))" 2>/dev/null || python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))" <<< "$text")
-    # Remove outer quotes added by json.dumps
-    escaped_text=${escaped_text:1:-1}
-
-    local assets=""
-    if [ -n "$image_url" ]; then
-      assets=", assets: { images: [{ url: \\\"${image_url}\\\" }] }"
-    fi
-
-    local mutation="mutation { createPost(input: { text: \\\"${escaped_text}\\\", channelId: \\\"${channel_id}\\\", schedulingType: automatic, mode: addToQueue, saveToDraft: true${assets} }) { ... on PostActionSuccess { post { id } } ... on MutationError { message } } }"
-
     local response
-    response=$(curl -s -X POST "${BUFFER_API}" \
-      -H "Content-Type: application/json" \
-      -H "${AUTH_HEADER}" \
-      -d "{\"query\": \"${mutation}\"}")
+    response=$(python3 -c "
+import json, urllib.request, sys
 
-    local success
-    success=$(echo "$response" | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-post = data.get('data', {}).get('createPost', {}).get('post')
-if post:
-    print('ok')
-else:
-    err = data.get('data', {}).get('createPost', {}).get('message', '')
-    errs = data.get('errors', [])
-    if errs:
-        err = errs[0].get('message', '')
-    print(f'error: {err}')
-" 2>/dev/null || echo "error: parse failed")
+text = sys.stdin.read().strip()
+channel_id = '${channel_id}'
+image_url = '${image_url}'
 
-    if [ "$success" = "ok" ]; then
+mutation = '''mutation CreateDraftPost(\$input: CreatePostInput!) {
+  createPost(input: \$input) {
+    ... on PostActionSuccess { post { id } }
+    ... on MutationError { message }
+  }
+}'''
+
+variables = {
+    'input': {
+        'text': text,
+        'channelId': channel_id,
+        'schedulingType': 'automatic',
+        'mode': 'addToQueue',
+        'saveToDraft': True
+    }
+}
+
+if image_url:
+    variables['input']['assets'] = {'images': [{'url': image_url}]}
+
+payload = json.dumps({'query': mutation, 'variables': variables}).encode()
+req = urllib.request.Request('${BUFFER_API}', data=payload, headers={
+    'Content-Type': 'application/json',
+    '${AUTH_HEADER%%:*}': '${AUTH_HEADER#*: }'
+})
+
+try:
+    resp = urllib.request.urlopen(req)
+    data = json.loads(resp.read())
+    post = data.get('data', {}).get('createPost', {}).get('post')
+    if post:
+        print('ok')
+    else:
+        err = data.get('data', {}).get('createPost', {}).get('message', '')
+        errs = data.get('errors', [])
+        if errs:
+            err = errs[0].get('message', '')
+        print(f'error: {err}')
+except urllib.error.HTTPError as e:
+    print(f'error: HTTP {e.code} {e.read().decode()[:200]}')
+except Exception as e:
+    print(f'error: {e}')
+" <<< "$text")
+
+    if [ "$response" = "ok" ]; then
       echo "  Queued to Buffer (${label}): $title"
     else
-      echo "  Error queuing to Buffer ${label}: $success"
+      echo "  Error queuing to Buffer ${label}: $response"
     fi
   }
 
