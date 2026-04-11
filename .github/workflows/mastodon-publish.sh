@@ -77,12 +77,23 @@ print('found' if any(url in s.get('content', '') for s in statuses) else 'not_fo
   # Build hashtags from tags
   hashtags=$(echo "$tags" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | sed 's/^/#/' | tr '\n' ' ')
 
+  # Extract social_summary if available
+  social_summary=$(sed -n 's/^social_summary: *"\(.*\)"/\1/p' "$post_file" | head -1 | sed 's/\\n/\n/g')
+
   # Post status
-  status_text="${title}
+  if [ -n "$social_summary" ]; then
+    status_text="${social_summary}
 
 ${canonical_url}
 
-${hashtags}"
+#DiaryOfALazyDeveloper ${hashtags}"
+  else
+    status_text="${title}
+
+${canonical_url}
+
+#DiaryOfALazyDeveloper ${hashtags}"
+  fi
 
   if [ -n "$media_id" ]; then
     response=$(curl -s -w "\n%{http_code}" -X POST "${MASTODON_INSTANCE}/api/v1/statuses" \
