@@ -86,19 +86,27 @@ for line in open('${post_file}'):
         break
 " 2>/dev/null || true)
 
+  # Add #DiaryOfALazyDeveloper only if not already in text
+  diary_tag=""
+  if [ -n "$social_summary" ]; then
+    echo "$social_summary" | grep -qF "#DiaryOfALazyDeveloper" || diary_tag="#DiaryOfALazyDeveloper "
+  else
+    diary_tag="#DiaryOfALazyDeveloper "
+  fi
+
   # Post status
   if [ -n "$social_summary" ]; then
     status_text="${social_summary}
 
 ${canonical_url}
 
-#DiaryOfALazyDeveloper ${hashtags}"
+${diary_tag}${hashtags}"
   else
     status_text="${title}
 
 ${canonical_url}
 
-#DiaryOfALazyDeveloper ${hashtags}"
+${diary_tag}${hashtags}"
   fi
 
   if [ -n "$media_id" ]; then

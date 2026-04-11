@@ -81,6 +81,7 @@ known_urls=""
 for cid in $all_ids; do
   for status in draft scheduled sent; do
     posts_json=$(gql "query { posts(input: { organizationId: \"${org_id}\", channelIds: [\"${cid}\"], status: ${status}, first: 50 }) { edges { node { text } } } }")
+    echo "DEBUG dedup ${status} channel ${cid}: $(echo "$posts_json" | head -c 200)"
     urls=$(echo "$posts_json" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
@@ -131,19 +132,27 @@ for line in open('${post_file}'):
         break
 " 2>/dev/null || true)
 
+  # Add #DiaryOfALazyDeveloper only if not already in text
+  diary_tag=""
+  if [ -n "$social_summary" ]; then
+    echo "$social_summary" | grep -qF "#DiaryOfALazyDeveloper" || diary_tag="#DiaryOfALazyDeveloper "
+  else
+    diary_tag="#DiaryOfALazyDeveloper "
+  fi
+
   # Long text for LinkedIn/Threads
   if [ -n "$social_summary" ]; then
     long_text="${social_summary}
 
 ${canonical_url}
 
-#DiaryOfALazyDeveloper ${hashtags}"
+${diary_tag}${hashtags}"
   else
     long_text="${title}
 
 ${canonical_url}
 
-#DiaryOfALazyDeveloper ${hashtags}"
+${diary_tag}${hashtags}"
   fi
 
   # Short text for Twitter (280 char limit)
