@@ -79,19 +79,16 @@ fi
 # Collect existing post texts for dedup (drafts + scheduled + sent)
 known_urls=""
 for cid in $all_ids; do
-  for status in draft scheduled sent; do
-    posts_json=$(gql "query { posts(input: { organizationId: \"${org_id}\", channelIds: [\"${cid}\"], status: ${status}, first: 50 }) { edges { node { text } } } }")
-    echo "DEBUG dedup ${status} channel ${cid}: $(echo "$posts_json" | head -c 200)"
-    urls=$(echo "$posts_json" | python3 -c "
+  posts_json=$(gql "query { posts(first: 50, input: { organizationId: \"${org_id}\", filter: { channelIds: [\"${cid}\"], status: [draft, scheduled, sent] } }) { edges { node { text } } } }")
+  urls=$(echo "$posts_json" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
 edges = data.get('data', {}).get('posts', {}).get('edges', [])
 for e in edges:
     print(e.get('node', {}).get('text', ''))
 " 2>/dev/null || true)
-    known_urls="${known_urls}
+  known_urls="${known_urls}
 ${urls}"
-  done
 done
 
 for post_file in _posts/*.en.md; do
