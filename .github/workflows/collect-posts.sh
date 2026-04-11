@@ -56,6 +56,7 @@ for repo in $REPOS; do
     categories=$(echo "$frontmatter" | grep '^categories:' | sed 's/^categories:\s*//')
     tags=$(echo "$frontmatter" | grep '^tags:' | sed 's/^tags:\s*//')
     fm_repo=$(echo "$frontmatter" | grep '^repo:' | sed 's/^repo:\s*//')
+    social_summary=$(echo "$frontmatter" | grep '^social_summary:' | sed 's/^social_summary:\s*//')
 
     # Use repo from frontmatter if present, otherwise use the source repo
     if [ -z "$fm_repo" ]; then
@@ -82,6 +83,12 @@ for repo in $REPOS; do
     fi
 
     # Write Jekyll post
+    # Build optional frontmatter fields
+    extra_fm=""
+    if [ -n "$social_summary" ]; then
+      extra_fm="social_summary: ${social_summary}"
+    fi
+
     cat > "$OUTPUT" <<POSTEOF
 ---
 layout: post
@@ -91,6 +98,7 @@ categories: ${categories}
 tags: ${tags}
 repo: ${fm_repo}
 lang: ${LANG}
+${extra_fm}
 ---
 ${body}
 POSTEOF
