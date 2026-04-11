@@ -2,8 +2,8 @@ name: Publish posts
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 6 * * 6'
+  # schedule:
+  #   - cron: '0 6 * * 6'
 
 permissions:
   contents: write

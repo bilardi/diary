@@ -12,7 +12,38 @@ Tech posts from my projects. Each post lives in its project repo as `POST.it.md`
 
 ## Publishing
 
-The Action runs automatically every Saturday at 6:00 UTC. To trigger it manually:
+The Action handles blog publishing and cross-posting. Scheduled publishing (every Saturday at 6:00 UTC) is currently disabled; trigger manually.
+
+```mermaid
+flowchart LR
+    A[source repos] -->|collect posts| B[diary blog]
+    B -->|direct| D[dev.to]
+    B -->|direct| C[Mastodon]
+    B -->|queue| E[Buffer]
+    E -->|review & approve| F[LinkedIn]
+    E -->|review & approve| G[Twitter/X]
+    E -->|review & approve| H[Threads]
+```
+
+```mermaid
+sequenceDiagram
+    participant GH as GitHub Action
+    participant Blog as diary blog
+    participant DT as dev.to
+    participant M as Mastodon
+    participant B as Buffer
+    participant U as User
+
+    GH->>Blog: collect posts from source repos
+    GH->>Blog: commit & push new posts
+    GH->>DT: publish EN posts as draft
+    GH->>M: publish EN posts (skip if already posted)
+    GH->>B: queue EN posts (skip if already queued)
+    U->>B: review, edit and approve
+    B->>B: publish to LinkedIn, Twitter, Threads
+```
+
+To trigger it manually:
 
 1. Go to Actions > Publish posts
 2. Click "Run workflow" > "Run workflow"
@@ -36,6 +67,38 @@ EN posts are cross-posted automatically. All secrets go in repo Settings > Secre
 
 1. On mastodon.social: Settings > Development > New Application > select read, write and profile
 2. Copy the token: `MASTODON_ACCESS_TOKEN`
+
+### Buffer (LinkedIn, Twitter, Threads queue with review)
+
+1. Create a free account on [buffer.com](https://buffer.com) and connect LinkedIn, Twitter/X and Threads
+2. On buffer.com: My Organization (bottom left) > Apps & Integrations > API (beta) > + New Key
+3. Secret: `BUFFER_ACCESS_TOKEN`
+
+## Post frontmatter
+
+Each post in a source repo has this frontmatter:
+
+```yaml
+---
+title: "Docker on EC2 with Terraform"
+date: 2026-04-10
+categories: [devops]
+tags: [terraform, docker, aws, ec2]
+repo: bilardi/aws-docker-host
+social_summary: "I wrote my first article in the #DiaryOfALazyDeveloper series 🚀\n\n..."
+---
+```
+
+| Field | Required | Used by |
+|-------|----------|---------|
+| title | yes | blog, all social |
+| date | yes | blog URL |
+| categories | yes | blog |
+| tags | yes | blog, social hashtags |
+| repo | yes | collect-posts.sh |
+| social_summary | no | EN posts only. Used by Mastodon, Buffer (LinkedIn/Threads). If missing, title is used. Twitter always uses title (280 char limit). Must be under 500 characters including link and hashtags (Mastodon/Threads limit). |
+
+`#DiaryOfALazyDeveloper` is added automatically on all social posts.
 
 ## Development
 
