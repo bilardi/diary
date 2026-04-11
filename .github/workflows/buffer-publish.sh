@@ -76,19 +76,17 @@ if [ -z "$all_ids" ]; then
   exit 0
 fi
 
-# Collect existing post texts for dedup (drafts + scheduled + sent)
-known_urls=""
+# Collect existing post texts per channel for dedup
+declare -A channel_texts
 for cid in $all_ids; do
   posts_json=$(gql "query { posts(first: 50, input: { organizationId: \"${org_id}\", filter: { channelIds: [\"${cid}\"], status: [draft, scheduled, sent] } }) { edges { node { text } } } }")
-  urls=$(echo "$posts_json" | python3 -c "
+  channel_texts[$cid]=$(echo "$posts_json" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
 edges = data.get('data', {}).get('posts', {}).get('edges', [])
 for e in edges:
     print(e.get('node', {}).get('text', ''))
 " 2>/dev/null || true)
-  known_urls="${known_urls}
-${urls}"
 done
 
 for post_file in _posts/*.en.md; do
@@ -104,13 +102,7 @@ for post_file in _posts/*.en.md; do
   year_month=$(echo "$date" | cut -d- -f1-2)
   canonical_url="${SITE_URL}/articles/${year_month}/${slug}.en"
 
-  # Check if already in Buffer
-  if echo "$known_urls" | grep -qF "$canonical_url"; then
-    echo "  Already in Buffer: $title"
-    continue
-  fi
-
-  echo "  Queuing to Buffer: $title"
+  echo "  Processing: $title"
 
   # Extract first image URL from post body
   image_url=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$post_file" | \
@@ -227,12 +219,20 @@ else:
 
   # Queue to LinkedIn/Threads with long text
   for cid in $long_ids; do
-    create_draft "$long_text" "$cid" "LinkedIn/Threads"
+    if echo "${channel_texts[$cid]}" | grep -qF "$canonical_url"; then
+      echo "  Already in Buffer (LinkedIn/Threads): $title"
+    else
+      create_draft "$long_text" "$cid" "LinkedIn/Threads"
+    fi
   done
 
   # Queue to Twitter with short text
   for cid in $twitter_ids; do
-    create_draft "$short_text" "$cid" "Twitter"
+    if echo "${channel_texts[$cid]}" | grep -qF "$canonical_url"; then
+      echo "  Already in Buffer (Twitter): $title"
+    else
+      create_draft "$short_text" "$cid" "Twitter"
+    fi
   done
 done
 
