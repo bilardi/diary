@@ -6,6 +6,7 @@ categories: [devops]
 tags: [terraform, docker, aws, ec2]
 repo: bilardi/aws-docker-host
 lang: en
+social_summary: "I wrote my first article in the #DiaryOfALazyDeveloper series 🚀\n\nI needed to expose a Docker Compose app for a workshop: HTTPS, custom domain, backups, teardown with one command. ECS was overkill, manual setup was fragile.\n\n🔮 Spoiler: one terraform apply does it all 🏗️\n\nIn the article I describe every choice and why, driven by experience and the laziness of doing things by hand 😄"
 ---
 
 ![Architecture](https://raw.githubusercontent.com/bilardi/aws-docker-host/master/images/architecture.drawio.png)
