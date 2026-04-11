@@ -56,7 +56,7 @@ for repo in $REPOS; do
     categories=$(echo "$frontmatter" | grep '^categories:' | sed 's/^categories:\s*//')
     tags=$(echo "$frontmatter" | grep '^tags:' | sed 's/^tags:\s*//')
     fm_repo=$(echo "$frontmatter" | grep '^repo:' | sed 's/^repo:\s*//')
-    social_summary=$(echo "$frontmatter" | grep '^social_summary:' | sed 's/^social_summary:\s*//')
+    social_summary=$(echo "$frontmatter" | grep '^social_summary:' | sed 's/^social_summary:\s*//' || true)
 
     # Use repo from frontmatter if present, otherwise use the source repo
     if [ -z "$fm_repo" ]; then
