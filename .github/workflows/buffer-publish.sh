@@ -117,7 +117,7 @@ for post_file in _posts/*.en.md; do
     grep -oP '!\[.*?\]\(\K[^)]+' | head -1 || true)
 
   # Build hashtags from tags
-  hashtags=$(echo "$tags" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | sed 's/^/#/' | tr '\n' ' ')
+  hashtags=$(echo "$tags" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | sed 's/^/#/' | tr '\n' ' ' | sed 's/ *$//')
 
   # Extract social_summary if available
   social_summary=$(python3 -c "
