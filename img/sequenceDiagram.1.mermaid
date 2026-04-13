@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant GH as GitHub Action
+    participant Blog as diary blog
+    participant DT as dev.to
+    participant M as Mastodon
+    participant B as Buffer
+    participant U as User
+
+    GH->>Blog: collect posts from source repos
+    GH->>Blog: commit & push new posts
+    GH->>DT: publish EN posts as draft
+    GH->>M: publish EN posts (skip if already posted)
+    GH->>B: queue EN posts (skip if already queued)
+    U->>B: review, edit and approve
+    B->>B: publish to LinkedIn, Twitter, Threads

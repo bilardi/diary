@@ -1,0 +1,8 @@
+flowchart LR
+    A[source repos] -->|collect posts| B[diary blog]
+    B -->|direct| D[dev.to]
+    B -->|direct| C[Mastodon]
+    B -->|queue| E[Buffer]
+    E -->|review & approve| F[LinkedIn]
+    E -->|review & approve| G[Twitter/X]
+    E -->|review & approve| H[Threads]

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-orange" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="32" height="32" fill="#0d1117"/>
+  <!-- N1 verde (0,1) -->
+  <circle cx="16" cy="6" r="3.5" fill="#42b983" filter="url(#glow-green)"/>
+  <!-- N2 arancio (1,2) -->
+  <circle cx="26" cy="16" r="3.5" fill="#F5A623" filter="url(#glow-orange)"/>
+  <!-- N3 verde (2,0) -->
+  <circle cx="6" cy="26" r="3.5" fill="#42b983" filter="url(#glow-green)"/>
+  <!-- N4 arancio (2,1) -->
+  <circle cx="16" cy="26" r="3.5" fill="#F5A623" filter="url(#glow-orange)"/>
+  <!-- N5 verde (2,2) -->
+  <circle cx="26" cy="26" r="3.5" fill="#42b983" filter="url(#glow-green)"/>
+</svg>

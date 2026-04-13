@@ -4,6 +4,9 @@ set -euo pipefail
 # Queue new EN articles to Buffer (LinkedIn, Twitter, Threads) as drafts.
 # Uses Buffer GraphQL API. Requires BUFFER_ACCESS_TOKEN environment variable.
 # Posts go to Buffer drafts; the user reviews and approves them manually.
+#
+# API limits: 100 requests/24h. This script uses 3 queries (org + channels + dedup)
+# plus 1 mutation per channel per new post (max 3). Total: 3-6 per run.
 
 if [ -z "${BUFFER_ACCESS_TOKEN:-}" ]; then
   echo "BUFFER_ACCESS_TOKEN not set, skipping Buffer publish"
@@ -23,8 +26,9 @@ gql() {
     -d "{\"query\": $(echo "$query" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))")}"
 }
 
-# Get organization ID
-org_id=$(gql 'query { account { organizations { id } } }' | python3 -c "
+# Query 1: get org ID and channels in one call
+setup_json=$(gql 'query { account { organizations { id } } }')
+org_id=$(echo "$setup_json" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
 orgs = data.get('data', {}).get('account', {}).get('organizations', [])
@@ -39,56 +43,37 @@ fi
 
 echo "Buffer organization: ${org_id}"
 
-# Get channels
 channels_json=$(gql "query { channels(input: { organizationId: \"${org_id}\" }) { id name service } }")
-echo "DEBUG channels response: $(echo "$channels_json" | head -c 300)"
-echo "Buffer channels:"
-echo "$channels_json" | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-for ch in data.get('data', {}).get('channels', []):
-    print(f\"  {ch['service']}: {ch['name']} ({ch['id']})\")
-"
 
-# Separate channels by service
-twitter_ids=$(echo "$channels_json" | python3 -c "
+# Parse channels into service groups
+eval "$(echo "$channels_json" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
-for ch in data.get('data', {}).get('channels', []):
-    if ch.get('service', '') == 'twitter':
-        print(ch['id'])
-")
-long_ids=$(echo "$channels_json" | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-for ch in data.get('data', {}).get('channels', []):
-    if ch.get('service', '') != 'twitter':
-        print(ch['id'])
-")
-all_ids=$(echo "$channels_json" | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-for ch in data.get('data', {}).get('channels', []):
-    print(ch['id'])
-")
+channels = data.get('data', {}).get('channels', [])
+twitter = []
+long = []
+all_ids = []
+for ch in channels:
+    cid = ch['id']
+    svc = ch.get('service', '')
+    print(f\"  {svc}: {ch['name']} ({cid})\", file=sys.stderr)
+    all_ids.append(cid)
+    if svc == 'twitter':
+        twitter.append(cid)
+    else:
+        long.append(cid)
+print(f'twitter_ids=\"{chr(10).join(twitter)}\"')
+print(f'long_ids=\"{chr(10).join(long)}\"')
+print(f'all_ids=\"{chr(10).join(all_ids)}\"')
+" 2>&1 1>&3 | while read -r line; do echo "$line"; done 3>&1)"
 
 if [ -z "$all_ids" ]; then
   echo "No Buffer channels found, skipping"
   exit 0
 fi
 
-# Collect existing post texts per channel for dedup
-declare -A channel_texts
-for cid in $all_ids; do
-  posts_json=$(gql "query { posts(first: 50, input: { organizationId: \"${org_id}\", filter: { channelIds: [\"${cid}\"], status: [draft, scheduled, sent] } }) { edges { node { text } } } }")
-  channel_texts[$cid]=$(echo "$posts_json" | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-edges = data.get('data', {}).get('posts', {}).get('edges', [])
-for e in edges:
-    print(e.get('node', {}).get('text', ''))
-" 2>/dev/null || true)
-done
+# Query 2: get all existing posts for dedup (single query, no channel filter)
+dedup_json=$(gql "query { posts(first: 50, input: { organizationId: \"${org_id}\", filter: { status: [draft, scheduled, sent] } }) { edges { node { text channelId } } } }")
 
 for post_file in _posts/*.en.md; do
   [ -f "$post_file" ] || continue
@@ -114,7 +99,6 @@ for post_file in _posts/*.en.md; do
 
   # Extract social_summary if available
   social_summary=$(python3 -c "
-import sys
 for line in open('${post_file}'):
     if line.startswith('social_summary:'):
         val = line.split(':', 1)[1].strip().strip('\"')
@@ -130,7 +114,7 @@ for line in open('${post_file}'):
     diary_tag="#DiaryOfALazyDeveloper "
   fi
 
-  # Long text for LinkedIn/Threads
+  # Long text for LinkedIn/Threads (social_summary or fallback to title)
   if [ -n "$social_summary" ]; then
     long_text="${social_summary}
 
@@ -151,6 +135,18 @@ ${diary_tag}${hashtags}"
 ${canonical_url}
 
 #DiaryOfALazyDeveloper ${hashtags}"
+
+  # Check which channels already have this post
+  channels_with_post=$(echo "$dedup_json" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+url = '${canonical_url}'
+edges = data.get('data', {}).get('posts', {}).get('edges', [])
+for e in edges:
+    node = e.get('node', {})
+    if url in node.get('text', ''):
+        print(node.get('channelId', ''))
+" 2>/dev/null || true)
 
   # Helper: create draft post on a channel
   create_draft() {
@@ -218,18 +214,18 @@ else:
     fi
   }
 
-  # Queue to LinkedIn/Threads with long text
+  # Queue to LinkedIn/Threads with long text (skip if already posted on that channel)
   for cid in $long_ids; do
-    if echo "${channel_texts[$cid]}" | grep -qF "$canonical_url"; then
+    if echo "$channels_with_post" | grep -qF "$cid"; then
       echo "  Already in Buffer (LinkedIn/Threads): $title"
     else
       create_draft "$long_text" "$cid" "LinkedIn/Threads"
     fi
   done
 
-  # Queue to Twitter with short text
+  # Queue to Twitter with short text (skip if already posted on that channel)
   for cid in $twitter_ids; do
-    if echo "${channel_texts[$cid]}" | grep -qF "$canonical_url"; then
+    if echo "$channels_with_post" | grep -qF "$cid"; then
       echo "  Already in Buffer (Twitter): $title"
     else
       create_draft "$short_text" "$cid" "Twitter"
