@@ -65,7 +65,7 @@ for ch in channels:
 print(f'twitter_ids=\"{chr(10).join(twitter)}\"')
 print(f'long_ids=\"{chr(10).join(long)}\"')
 print(f'all_ids=\"{chr(10).join(all_ids)}\"')
-" 2>&1 1>&3 | while read -r line; do echo "$line"; done 3>&1)"
+")"
 
 if [ -z "$all_ids" ]; then
   echo "No Buffer channels found, skipping"
