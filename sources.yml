@@ -1,3 +1,4 @@
 repos:
   - bilardi/aws-docker-host
   - bilardi/diary
+  - bilardi/realtime-transcription
