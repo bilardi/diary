@@ -15,9 +15,9 @@ lang: it
 
 Preparavo un [workshop](https://github.com/bilardi/n8n-workshop) e mi serviva esporre un url con una specifica interfaccia, risparmiando ai partecipanti di installare docker o qualsiasi altro programma nel proprio computer.
 
-Il workshop l'ho preparato in locale con docker compose, che è uno dei metodi per sviluppare e testare in locale: funziona, è veloce, è riproducibile. E poi?
+Il workshop l'ho preparato in locale con docker compose, che è uno dei metodi per sviluppare e testare in locale: funziona, è veloce, è riproducibile. E poi ?
 
-E poi ti serve spostare tutto nel cloud. E da buon developer pigro, perché non usare direttamente quel docker compose?
+E poi ti serve spostare tutto nel cloud. E da buon developer pigro, perché non usare direttamente quel docker compose ?
 
 Il punto non è far partire Docker nel cloud, ma è tutto quello che ci sta intorno: HTTPS, dominio custom, accesso alla macchina, backup dei dati, e la possibilità di ricostruire o buttare giù tutto con un comando.
 
@@ -26,7 +26,7 @@ Con IaC puoi gestire agilmente HTTPS, dominio custom, backup, accesso e cleanup:
 Le opzioni classiche:
 
 - **Setup manuale di una EC2**: SSH, installi Docker, configuri nginx, certbot e preghi. Lento, fragile e difficile da riprodurre.
-- **ECS/Fargate**: task definition, service discovery, cluster .. per cosa? Usare Fargate per un singolo container è come usare un TIR per portare la spesa a casa.
+- **ECS/Fargate**: task definition, service discovery, cluster .. per cosa ? Usare Fargate per un singolo container è come usare un TIR per portare la spesa a casa.
 - **Docker su EC2 con Terraform**: un `terraform apply` per tirare su, un `bash scripts/destroy.sh` per buttare giù. Backup incluso.
 
 La terza opzione è quella che ho scelto perché ha l'architettura più semplice .. e la parte più complessa dipende dal tuo user data !

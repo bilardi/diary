@@ -15,9 +15,9 @@ social_summary: "I wrote my first article in the #DiaryOfALazyDeveloper series ð
 
 I was preparing a [workshop](https://github.com/bilardi/n8n-workshop) and needed to expose a url with a specific interface, sparing participants from installing docker or anything else on their machines.
 
-I built the workshop locally with docker compose, which is one of the ways to develop and test locally: it works, it's fast, it's reproducible. And then?
+I built the workshop locally with docker compose, which is one of the ways to develop and test locally: it works, it's fast, it's reproducible. And then ?
 
-Then you need to move everything to the cloud. And as a lazy developer, why not use that same docker compose?
+Then you need to move everything to the cloud. And as a lazy developer, why not use that same docker compose ?
 
 The point isn't running Docker in the cloud - it's everything around it: HTTPS, custom domain, machine access, data backups, and the ability to rebuild or tear it all down with one command.
 
