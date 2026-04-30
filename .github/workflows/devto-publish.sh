@@ -27,10 +27,16 @@ for post_file in _posts/*.en.md; do
   # Extract body (everything after second ---)
   body=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$post_file")
 
-  # Check if already published on dev.to (search by canonical URL)
+  # Check if already published on dev.to (search by canonical URL).
+  # canonical_url is passed via env var to avoid interpolating into Python code.
   existing=$(curl -s -H "api-key: ${DEV_TO_API_KEY}" \
     "https://dev.to/api/articles/me?per_page=100" | \
-    python3 -c "import sys,json; articles=json.load(sys.stdin); print('found' if any(a.get('canonical_url','') == '${canonical_url}' for a in articles) else 'not_found')" 2>/dev/null || echo "error")
+    CANONICAL_URL="$canonical_url" python3 -c '
+import sys, json, os
+articles = json.load(sys.stdin)
+url = os.environ["CANONICAL_URL"]
+print("found" if any(a.get("canonical_url", "") == url for a in articles) else "not_found")
+' 2>/dev/null || echo "error")
 
   if [ "$existing" = "found" ]; then
     echo "  Already on dev.to: $title"
@@ -39,28 +45,27 @@ for post_file in _posts/*.en.md; do
 
   echo "  Publishing draft to dev.to: $title"
 
-  # Convert tags to JSON array (dev.to max 4 tags)
-  tags_json=$(echo "$tags" | tr ',' '\n' | head -4 | python3 -c "import sys,json; print(json.dumps([t.strip() for t in sys.stdin.read().strip().split('\n') if t.strip()]))")
-
-  # Escape body for JSON
-  body_json=$(python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))" <<< "$body")
+  # Build JSON payload safely: all inputs are passed via environment variables,
+  # so titles/bodies containing apostrophes or other special characters are
+  # serialized correctly by json.dumps without shell quoting issues.
+  payload=$(TITLE="$title" BODY="$body" CANONICAL_URL="$canonical_url" TAGS="$tags" python3 -c '
+import json, os
+tags = [t.strip() for t in os.environ["TAGS"].split(",") if t.strip()][:4]
+print(json.dumps({
+    "article": {
+        "title": os.environ["TITLE"],
+        "body_markdown": os.environ["BODY"],
+        "canonical_url": os.environ["CANONICAL_URL"],
+        "published": False,
+        "tags": tags,
+    }
+}))')
 
   # Publish as draft
   response=$(curl -s -w "\n%{http_code}" -X POST "https://dev.to/api/articles" \
     -H "api-key: ${DEV_TO_API_KEY}" \
     -H "Content-Type: application/json" \
-    -d "$(python3 -c "
-import json
-print(json.dumps({
-    'article': {
-        'title': $(python3 -c "import json; print(json.dumps('$title'))"),
-        'body_markdown': $body_json,
-        'canonical_url': '$canonical_url',
-        'published': False,
-        'tags': $tags_json
-    }
-}))
-")")
+    -d "$payload")
 
   http_code=$(echo "$response" | tail -1)
   response_body=$(echo "$response" | sed '$d')
