@@ -69,11 +69,21 @@ for repo in $REPOS; do
     # Extract body: everything after the second ---
     body=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$post_file")
 
-    # Rewrite relative image paths to raw.githubusercontent.com URLs
-    # Handle both ./images/... and images/... patterns
+    # Rewrite any relative image path to a raw.githubusercontent.com URL.
+    # Absolute URLs (http://, https://, /) are left untouched.
     RAW_BASE="https://raw.githubusercontent.com/${OWNER}/${REPONAME}/${DEFAULT_BRANCH}"
-    body=$(echo "$body" | sed "s|\!\[\([^]]*\)\](\./images/|\![\1](${RAW_BASE}/images/|g")
-    body=$(echo "$body" | sed "s|\!\[\([^]]*\)\](images/|\![\1](${RAW_BASE}/images/|g")
+    body=$(RAW_BASE="$RAW_BASE" python3 -c '
+import os, re, sys
+raw_base = os.environ["RAW_BASE"]
+def rewrite(m):
+    alt, url = m.group(1), m.group(2)
+    if url.startswith(("http://", "https://", "/")):
+        return m.group(0)
+    if url.startswith("./"):
+        url = url[2:]
+    return f"![{alt}]({raw_base}/{url})"
+sys.stdout.write(re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", rewrite, sys.stdin.read()))
+' <<< "$body")
 
     # Determine output filename
     if [ "$LANG" = "it" ]; then
