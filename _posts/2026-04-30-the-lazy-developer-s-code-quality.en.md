@@ -9,7 +9,7 @@ lang: en
 social_summary: "#CodeQuality of the lazy developer 🛠️\n\nUpdating an educational #Python repo, I looked into what to automate for code quality.\n\n🔮 Spoiler: I landed on uv, ruff, pyright and pre-commit.\n\nIn the article: the picks, why, and the make patch that broke on the first try 😄"
 ---
 
-![Flow](docs/images/code.quality.vertical.flowchart.png)
+![Flow](https://raw.githubusercontent.com/bilardi/python-prototype/master/docs/images/code.quality.vertical.flowchart.png)
 
 ## A repo to refresh, several rabbit holes to dive into
 

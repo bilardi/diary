@@ -9,7 +9,7 @@ lang: it
 
 ---
 
-![Flow](docs/images/code.quality.vertical.flowchart.png)
+![Flow](https://raw.githubusercontent.com/bilardi/python-prototype/master/docs/images/code.quality.vertical.flowchart.png)
 
 ## Un repo da rinnovare, tante ricerche da fare
 
