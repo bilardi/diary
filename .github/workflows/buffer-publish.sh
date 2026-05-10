@@ -94,16 +94,29 @@ for post_file in _posts/*.en.md; do
   image_url=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$post_file" | \
     grep -oP '!\[.*?\]\(\K[^)]+' | head -1 || true)
 
-  # Build hashtags from tags
-  hashtags=$(echo "$tags" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | sed 's/^/#/' | tr '\n' ' ' | sed 's/ *$//')
-
-  # Extract social_summary if available
+  # Extract social_summary FIRST (so we can dedup hashtags against it)
   social_summary=$(python3 -c "
 for line in open('${post_file}'):
     if line.startswith('social_summary:'):
         val = line.split(':', 1)[1].strip().strip('\"')
         print(val.replace('\\\\n', '\n'))
         break
+" 2>/dev/null || true)
+
+  # Build hashtags from tags, skipping ones already present in social_summary.
+  # Case-insensitive, word-boundary match: lets authors write inline hashtags with
+  # proper-noun capitalization (#Iceberg, #AWS) while frontmatter stays lowercase
+  hashtags=$(TAGS="$tags" SOCIAL="$social_summary" python3 -c "
+import os, re
+tags = [t.strip() for t in os.environ['TAGS'].split(',') if t.strip()]
+text = os.environ['SOCIAL']
+filtered = []
+for tag in tags:
+    hashtag = f'#{tag}'
+    pattern = re.escape(hashtag) + r'(?![a-zA-Z0-9_])'
+    if not re.search(pattern, text, re.IGNORECASE):
+        filtered.append(hashtag)
+print(' '.join(filtered))
 " 2>/dev/null || true)
 
   # Add #DiaryOfALazyDeveloper only if not already in text
