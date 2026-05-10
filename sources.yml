@@ -1,5 +1,6 @@
 repos:
   - bilardi/aws-docker-host
   - bilardi/diary
+  - bilardi/etl-prototype
   - bilardi/python-prototype
   - bilardi/realtime-transcription
