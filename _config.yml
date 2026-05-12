@@ -102,7 +102,7 @@ owner:
   bing-verify:
   github: bilardi
   gitlab:
-  stackoverflow: 1472538
+  stackoverflow:
   linkedin: bilardi
   skype:
   xing:
@@ -121,16 +121,18 @@ owner:
   codepen:
   reddit:
   telegram:
-  wikipedia: Bilardi
+  wikipedia:
+  threads: alessandra.bilardi
+  mastodon: mastodon.social/@bilardi
   custom:
     - url: https://alessandra.bilardi.net/diary/feed.xml
       icon: fa-rss
-    - url: https://www.pandle.net/
-      icon: fa-share-alt
-    - url: https://bilardi.github.io/bookmarks/
-      icon: fa-bookmark
+    - url: https://dev.to/bilardi
+      icon: fa-blog
     - url: https://alessandra.bilardi.net/resume/
-      icon: fa-file
+      icon: fa-microphone
+    - url: https://bilardi.github.ioresume/categories/projects/
+      icon: fa-thumbtack
     - url: http://github.com/bilardi/leonids/
       icon: fa-code-fork
 
