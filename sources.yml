@@ -3,4 +3,5 @@ repos:
   - bilardi/diary
   - bilardi/etl-prototype
   - bilardi/python-prototype
+  - bilardi/realtime-speech-to-speech
   - bilardi/realtime-transcription
