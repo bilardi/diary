@@ -2,6 +2,11 @@ name: Publish posts
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no drafts created, only logs)'
+        type: boolean
+        default: false
   # schedule:
   #   - cron: '0 6 * * 6'
 
@@ -14,6 +19,16 @@ jobs:
     steps:
       - name: Checkout diary
         uses: actions/checkout@v4
+
+      - name: Checkout publish scripts
+        uses: actions/checkout@v4
+        with:
+          repository: bilardi/github-actions-publish
+          ref: v0.2.0
+          path: .publish-scripts
+
+      - name: Install dependencies
+        run: pip install pyyaml
 
       - name: Collect and publish posts
         run: bash .github/workflows/collect-posts.sh
@@ -36,21 +51,26 @@ jobs:
           git commit -m "chore: update posts from source repos"
           git push
 
-      - name: Publish drafts to dev.to
-        if: env.DEV_TO_API_KEY != ''
-        env:
-          DEV_TO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
-        run: bash .github/workflows/devto-publish.sh
+      - name: Parse posts for social publishing
+        run: bash scripts/parse-diary.sh
 
-      - name: Post to Mastodon
-        if: env.MASTODON_ACCESS_TOKEN != ''
-        env:
-          MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
-        run: bash .github/workflows/mastodon-publish.sh
+      # - name: Post to Mastodon
+      #   if: env.MASTODON_ACCESS_TOKEN != ''
+      #   env:
+      #     MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+      #     DRY_RUN: ${{ inputs.dry_run }}
+      #   run: bash .publish-scripts/scripts/mastodon-publish.sh
 
       - name: Queue to Buffer (LinkedIn, Twitter, Threads)
         if: env.BUFFER_ACCESS_TOKEN != ''
         env:
           BUFFER_ACCESS_TOKEN: ${{ secrets.BUFFER_ACCESS_TOKEN }}
-        run: bash .github/workflows/buffer-publish.sh
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: bash .publish-scripts/scripts/buffer-publish.sh
 
+      - name: Publish drafts to dev.to
+        if: env.DEV_TO_API_KEY != ''
+        env:
+          DEV_TO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: bash .publish-scripts/scripts/devto-publish.sh

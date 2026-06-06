@@ -1,0 +1,12 @@
+hashtag: "#DiaryOfALazyDeveloper"
+content_path: "_posts"
+parser: diary
+site_url: "https://alessandra.bilardi.net/diary"
+mastodon:
+  instance: https://mastodon.social
+  enabled: true
+buffer:
+  enabled: true
+devto:
+  enabled: true
+instagram_check: false
