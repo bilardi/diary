@@ -54,12 +54,12 @@ jobs:
       - name: Parse posts for social publishing
         run: bash scripts/parse-diary.sh
 
-      # - name: Post to Mastodon
-      #   if: env.MASTODON_ACCESS_TOKEN != ''
-      #   env:
-      #     MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
-      #     DRY_RUN: ${{ inputs.dry_run }}
-      #   run: bash .publish-scripts/scripts/mastodon-publish.sh
+      - name: Post to Mastodon
+        if: env.MASTODON_ACCESS_TOKEN != ''
+        env:
+          MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: bash .publish-scripts/scripts/mastodon-publish.sh
 
       - name: Queue to Buffer (LinkedIn, Twitter, Threads)
         if: env.BUFFER_ACCESS_TOKEN != ''
