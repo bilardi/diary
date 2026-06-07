@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: bilardi/github-actions-publish
-          ref: v0.2.0
+          ref: v0.2.1
           path: .publish-scripts
 
       - name: Install dependencies

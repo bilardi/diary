@@ -38,6 +38,14 @@ Or from CLI:
 gh workflow run publish.yml
 ```
 
+To test the whole run without creating any post or draft, use dry-run (the steps still query the APIs and dedup, but log only):
+
+```sh
+gh workflow run publish.yml -f dry_run=true
+```
+
+The "Run workflow" dialog also exposes a "Dry run" checkbox for the same purpose.
+
 ## Cross-posting
 
 All secrets go in repo Settings > Secrets and variables > Actions > New repository secret.
