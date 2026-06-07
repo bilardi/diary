@@ -8,14 +8,16 @@ hashtag, tag hashtags with case-insensitive dedup) replicates the logic the
 diary publish scripts used to do inline.
 """
 
+import glob
 import json
+import os
 import re
 import sys
 
 import yaml
 
 
-def parse_frontmatter(content, filepath):
+def parse_frontmatter(content: str, filepath: str) -> tuple[dict, str]:
     """Extract frontmatter dict and body string from a Jekyll post."""
     if not content.startswith("---"):
         raise ValueError(f"{filepath}: missing frontmatter (no opening ---)")
@@ -28,7 +30,7 @@ def parse_frontmatter(content, filepath):
     return fm, parts[2].lstrip("\n")
 
 
-def slugify(title):
+def slugify(title: str) -> str:
     """Reproduce the slug collect-posts.sh builds from the title."""
     slug = title.lower()
     slug = re.sub(r"[^a-z0-9]", "-", slug)
@@ -36,19 +38,19 @@ def slugify(title):
     return slug.strip("-")
 
 
-def first_image(body):
+def first_image(body: str) -> str:
     """Return the first markdown image URL in the body, or '' if none."""
     match = re.search(r"!\[[^\]]*\]\(([^)]+)\)", body)
     return match.group(1) if match else ""
 
 
-def hashtag_present(hashtag, text):
+def hashtag_present(hashtag: str, text: str) -> bool:
     """Case-insensitive, word-boundary check for a hashtag in text."""
     pattern = re.escape(hashtag) + r"(?![a-zA-Z0-9_])"
     return re.search(pattern, text, re.IGNORECASE) is not None
 
 
-def tag_hashtags(tags, text):
+def tag_hashtags(tags: list[str], text: str) -> str:
     """Build '#tag' hashtags from tags, skipping any already present in text."""
     filtered = []
     for tag in tags:
@@ -58,12 +60,12 @@ def tag_hashtags(tags, text):
     return " ".join(filtered)
 
 
-def join_tail(*parts):
+def join_tail(*parts: str) -> str:
     """Join non-empty hashtag groups with a single space."""
     return " ".join(p for p in parts if p)
 
 
-def parse_file(filepath, fixed_hashtag, site_url):
+def parse_file(filepath: str, fixed_hashtag: str, site_url: str) -> dict:
     """Parse a single _posts/*.en.md file into a post dict."""
     with open(filepath) as f:
         content = f.read()
@@ -105,16 +107,13 @@ def parse_file(filepath, fixed_hashtag, site_url):
     }
 
 
-def main():
+def main() -> None:
     with open("social.yml") as f:
         config = yaml.safe_load(f)
 
     fixed_hashtag = config["hashtag"]
     content_path = config.get("content_path", "_posts")
     site_url = config["site_url"].rstrip("/")
-
-    import glob
-    import os
 
     posts = []
     errors = []
