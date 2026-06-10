@@ -2,6 +2,7 @@ repos:
   - bilardi/aws-docker-host
   - bilardi/diary
   - bilardi/etl-prototype
+  - bilardi/github-actions-publish
   - bilardi/python-prototype
   - bilardi/realtime-speech-to-speech
   - bilardi/realtime-transcription
