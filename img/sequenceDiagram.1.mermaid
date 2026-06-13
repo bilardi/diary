@@ -1,15 +1,25 @@
 sequenceDiagram
+    participant S as Source Repos
     participant GH as GitHub Action
-    participant Blog as diary blog
-    participant DT as dev.to
+    participant P as Parser
     participant M as Mastodon
     participant B as Buffer
+    participant DT as dev.to
     participant U as User
 
-    GH->>Blog: collect posts from source repos
-    GH->>Blog: commit & push new posts
-    GH->>DT: publish EN posts as draft
-    GH->>M: publish EN posts (skip if already posted)
-    GH->>B: queue EN posts (skip if already queued)
-    U->>B: review, edit and approve
-    B->>B: publish to LinkedIn, Twitter, Threads
+    GH->>S: collect POST.it.md / POST.en.md
+    GH->>GH: commit & push new posts
+    GH->>P: parse _posts/*.en.md
+    P->>P: validate, build social text
+    P->>GH: posts.json
+    alt dry_run = false
+        GH->>M: publish posts (skip if already posted)
+        GH->>B: queue drafts per channel (skip if already queued)
+        GH->>DT: create drafts (skip if title/article missing)
+        U->>B: review, edit and approve
+        U->>DT: review, edit and publish
+    else dry_run = true
+        GH->>M: check dedup, skip publish
+        GH->>B: check dedup, skip queue
+        GH->>DT: check dedup, skip create
+    end

@@ -1,8 +1,9 @@
 flowchart LR
-    A[source repos] -->|collect posts| B[diary blog]
-    B -->|direct| D[dev.to]
+    S[source repos] -->|collect posts| A[diary blog]
+    A -->|parse| B[posts.json]
     B -->|direct| C[Mastodon]
     B -->|queue| E[Buffer]
+    B -->|direct| D[dev.to]
     E -->|review & approve| F[LinkedIn]
     E -->|review & approve| G[Twitter/X]
     E -->|review & approve| H[Threads]
