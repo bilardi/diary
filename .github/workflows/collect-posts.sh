@@ -31,8 +31,8 @@ for repo in $REPOS; do
   OWNER=$(echo "$repo" | cut -d/ -f1)
   REPONAME=$(echo "$repo" | cut -d/ -f2)
 
-  # Process each POST file (POST.it.md, POST.en.md, and plain POST.md)
-  for post_file in "$REPO_DIR"/POST.it.md "$REPO_DIR"/POST.en.md "$REPO_DIR"/POST.md; do
+  # Process each POST file (POST.it.md, POST.en.md)
+  for post_file in "$REPO_DIR"/POST.it.md "$REPO_DIR"/POST.en.md; do
     [ -f "$post_file" ] || continue
 
     basename_file=$(basename "$post_file")
@@ -41,7 +41,6 @@ for repo in $REPOS; do
     case "$basename_file" in
       POST.it.md) LANG="it" ;;
       POST.en.md) LANG="en" ;;
-      POST.md)    LANG="it" ;;  # default to Italian for plain POST.md
       *)          continue ;;
     esac
 
