@@ -4,7 +4,7 @@ permalink: about.html
 ---
 #### Diary of a lazy developer
 
-Tech posts from my projects. Each post lives in its project repo as `POST.it.md` and `POST.en.md`, and gets published here automatically by a GitHub Action.
+Tech posts from my projects. Each post lives in its project repo as `POST.it.md` and `POST.en.md`, and gets published here automatically by a GitHub Action. A repo with more than one post adds numbered pairs from 2: `POST.it.2.md` / `POST.en.2.md`, `POST.it.3.md` / `POST.en.3.md`, and so on.
 
 - Theme: [leonids](https://github.com/bilardi/leonids) (Jekyll)
 - Automation: [publish.yml](https://github.com/bilardi/diary/blob/master/.github/workflows/publish.yml)
@@ -91,6 +91,8 @@ social_summary: "I wrote my first article in the #DiaryOfALazyDeveloper series �
 | social_summary | no | EN posts only. Used by Mastodon, Buffer (LinkedIn/Threads). If missing, title is used. Twitter always uses title (280 char limit). Must be under 500 characters including link and hashtags (Mastodon/Threads limit). Buffer counts in UTF-16 code units: emoji above BMP (e.g. 🚀, 🔮, 😄) count as 2 characters each. |
 
 `#DiaryOfALazyDeveloper` is added automatically on all social posts.
+
+The source files do not carry `lang` or `pair`: `collect-posts.sh` derives both from the filename (`POST.it.md` -> `lang: it`, `pair: 1`; `POST.en.2.md` -> `lang: en`, `pair: 2`) and the post template uses `repo` + `pair` + opposite `lang` to link a post to its twin in the other language.
 
 ## Project structure
 

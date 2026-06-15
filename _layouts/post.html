@@ -57,7 +57,7 @@ layout: default
         {% else %}
           {% assign twin_lang = "it" %}
         {% endif %}
-        {% assign twins = site.posts | where: "repo", page.repo | where: "lang", twin_lang %}
+        {% assign twins = site.posts | where: "repo", page.repo | where: "pair", page.pair | where: "lang", twin_lang %}
         {% assign twin_post = twins | first %}
         {% if twin_post %}
           <span class="post-lang">[<a href="{{ twin_post.url | prepend: site.baseurl }}">{{ twin_lang | upcase }}</a>]</span>

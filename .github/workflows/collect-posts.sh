@@ -31,20 +31,25 @@ for repo in $REPOS; do
   OWNER=$(echo "$repo" | cut -d/ -f1)
   REPONAME=$(echo "$repo" | cut -d/ -f2)
 
-  # Process each POST file (POST.it.md, POST.en.md)
-  for post_file in "$REPO_DIR"/POST.it.md "$REPO_DIR"/POST.en.md; do
+  # Process each POST file. The legacy unnumbered pair is pair 1; additional
+  # pairs are numbered from 2 (POST.it.2.md / POST.en.2.md, ...). The number is
+  # the pair key matching IT and EN twins.
+  shopt -s nullglob
+  for post_file in "$REPO_DIR"/POST.it.md "$REPO_DIR"/POST.it.[0-9]*.md "$REPO_DIR"/POST.en.md "$REPO_DIR"/POST.en.[0-9]*.md; do
     [ -f "$post_file" ] || continue
 
     basename_file=$(basename "$post_file")
 
-    # Determine language from filename
+    # Determine language and pair from filename
     case "$basename_file" in
-      POST.it.md) LANG="it" ;;
-      POST.en.md) LANG="en" ;;
-      *)          continue ;;
+      POST.it.md)        LANG="it"; PAIR="1" ;;
+      POST.en.md)        LANG="en"; PAIR="1" ;;
+      POST.it.[0-9]*.md) LANG="it"; PAIR=$(echo "$basename_file" | sed 's/^POST\.it\.\([0-9]*\)\.md$/\1/') ;;
+      POST.en.[0-9]*.md) LANG="en"; PAIR=$(echo "$basename_file" | sed 's/^POST\.en\.\([0-9]*\)\.md$/\1/') ;;
+      *)                 continue ;;
     esac
 
-    echo "  Found $basename_file (lang=$LANG)"
+    echo "  Found $basename_file (lang=$LANG, pair=$PAIR)"
 
     # Extract frontmatter (between first and second ---)
     frontmatter=$(sed -n '/^---$/,/^---$/p' "$post_file" | sed '1d;$d')
@@ -107,6 +112,7 @@ categories: ${categories}
 tags: ${tags}
 repo: ${fm_repo}
 lang: ${LANG}
+pair: ${PAIR}
 ${extra_fm}
 ---
 ${body}
