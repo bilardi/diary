@@ -76,6 +76,9 @@ kramdown:
 plugins:
   - jekyll-redirect-from
 
+exclude:
+  - tests
+
 #
 ###################################
 # Site Owner configuration
