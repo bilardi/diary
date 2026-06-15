@@ -1,11 +1,19 @@
 <nav class="post-navigation" role="navigation">
+  {% assign lang_posts = site.posts | where: "lang", page.lang %}
+  {% assign curr = -1 %}
+  {% for p in lang_posts %}
+    {% if p.url == page.url %}{% assign curr = forloop.index0 %}{% endif %}
+  {% endfor %}
+  {% assign older_idx = curr | plus: 1 %}
+  {% assign newer_idx = curr | minus: 1 %}
   <div class="row">
     <div class="col s5">
       <div class="post-nav-prev">
-        {% if page.previous and page.previous.lang == page.lang %}
-        <a href="{{ site.url }}{{ site.baseurl }}{{ page.previous.url }}" title="{{ page.previous.title | escape }}">
+        {% if curr >= 0 and older_idx < lang_posts.size %}
+        {% assign older = lang_posts[older_idx] %}
+        <a href="{{ site.url }}{{ site.baseurl }}{{ older.url }}" title="{{ older.title | escape }}">
           <div class="post-nav-btn">
-            <div class="post-nav-text"><span class="{{ site.navigation.left.color }}-text-color"><i class="fa {{ site.navigation.left.icon }} "></i> </span><span class="hidden-md primary-text-color">{{ page.previous.title }}</span></div>
+            <div class="post-nav-text"><span class="{{ site.navigation.left.color }}-text-color"><i class="fa {{ site.navigation.left.icon }} "></i> </span><span class="hidden-md primary-text-color">{{ older.title }}</span></div>
           </div>
         </a>
         {% endif %}
@@ -20,10 +28,11 @@
     </div>
     <div class="col s5 right">
       <div class="post-nav-next">
-        {% if page.next and page.next.lang == page.lang %}
-        <a href="{{ site.url }}{{ site.baseurl }}{{ page.next.url }}" title="{{ page.next.title | escape }}">
+        {% if curr > 0 %}
+        {% assign newer = lang_posts[newer_idx] %}
+        <a href="{{ site.url }}{{ site.baseurl }}{{ newer.url }}" title="{{ newer.title | escape }}">
           <div class="post-nav-btn">
-            <div class="post-nav-text"><span class="hidden-md primary-text-color">{{ page.next.title }}</span><span class="{{ site.navigation.right.color }}-text-color"> <i class="fa {{ site.navigation.right.icon }}"></i></span></div>
+            <div class="post-nav-text"><span class="hidden-md primary-text-color">{{ newer.title }}</span><span class="{{ site.navigation.right.color }}-text-color"> <i class="fa {{ site.navigation.right.icon }}"></i></span></div>
           </div>
         </a>
         {% endif %}
