@@ -6,6 +6,7 @@ categories: [stt]
 tags: [aws, transcribe, docker, fastapi]
 repo: bilardi/realtime-transcription
 lang: it
+pair: 1
 
 ---
 

@@ -6,6 +6,7 @@ categories: [devops]
 tags: [terraform, docker, aws, ec2]
 repo: bilardi/aws-docker-host
 lang: it
+pair: 1
 
 ---
 

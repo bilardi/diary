@@ -6,6 +6,7 @@ categories: [data-engineering]
 tags: [aws, glue, iceberg, parquet]
 repo: bilardi/etl-prototype
 lang: it
+pair: 1
 
 ---
 

@@ -6,6 +6,7 @@ categories: [data-engineering]
 tags: [aws, glue, iceberg, parquet]
 repo: bilardi/etl-prototype
 lang: en
+pair: 1
 social_summary: "When does #Iceberg beat #Parquet+projection on #AWSGlue, and when doesn't ?\n\nAn end-to-end #ETL PoC on #AWS to find out: producer, #Kinesis, two #Firehose paths, two #Glue jobs, #Athena.\n\n🔮 Spoiler: how the data is read is the key to the choice.\n\nIn the article: every choice with its why, plus a few gems from some Glue experience 😄"
 ---
 

@@ -6,6 +6,7 @@ categories: [python]
 tags: [pytest, ruff, pyright, uv]
 repo: bilardi/python-prototype
 lang: it
+pair: 1
 
 ---
 

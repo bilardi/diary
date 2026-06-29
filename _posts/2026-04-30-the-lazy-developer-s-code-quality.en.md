@@ -6,6 +6,7 @@ categories: [python]
 tags: [pytest, ruff, pyright, uv]
 repo: bilardi/python-prototype
 lang: en
+pair: 1
 social_summary: "#CodeQuality of the lazy developer 🛠️\n\nUpdating an educational #Python repo, I looked into what to automate for code quality.\n\n🔮 Spoiler: I landed on uv, ruff, pyright and pre-commit.\n\nIn the article: the picks, why, and the make patch that broke on the first try 😄"
 ---
 

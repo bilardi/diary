@@ -6,6 +6,7 @@ categories: [stt,tts]
 tags: [aws, polly, docker, fastapi]
 repo: bilardi/realtime-speech-to-speech
 lang: it
+pair: 1
 
 ---
 

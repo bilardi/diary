@@ -6,6 +6,7 @@ categories: [devops]
 tags: [GithubActions, CrossPosting, social, api]
 repo: bilardi/github-actions-publish
 lang: it
+pair: 1
 
 ---
 

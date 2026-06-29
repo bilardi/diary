@@ -6,6 +6,7 @@ categories: [stt,tts]
 tags: [aws, polly, docker, fastapi]
 repo: bilardi/realtime-speech-to-speech
 lang: en
+pair: 1
 social_summary: "It all started from a curiosity & a new feature.\n\nIn a realtime #SpeechToSpeech project on #AWS, can I use #polly bidirectional streaming with #python ?\n\n🔮 Spoiler: well, when boto3 doesn't have it (yet), you write it 🏗️\n\nIn the article I describe each choice and the reasons, eager to ship something new 😄"
 ---
 

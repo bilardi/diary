@@ -6,6 +6,7 @@ categories: [devops]
 tags: [GithubActions, CrossPosting, social, api]
 repo: bilardi/github-actions-publish
 lang: en
+pair: 1
 social_summary: "I can't clone myself, so let's automate 🚀\n\nHow do you automate #CrossPosting when every #social has its own rules ?\n\n🔮 Spoiler: the #API is the easy part. The real work is everything the docs don't tell you 🧩\n\nIn the article I describe every choice and why, with #GithubActions and workflows playing hide and seek 😄"
 ---
 
