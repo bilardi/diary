@@ -1,5 +1,6 @@
 repos:
   - bilardi/aws-docker-host
+  - bilardi/custom-ai-agents
   - bilardi/diary
   - bilardi/etl-prototype
   - bilardi/github-actions-publish
