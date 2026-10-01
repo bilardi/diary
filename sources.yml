@@ -1,6 +1,7 @@
 repos:
   - bilardi/aws-card-clash
   - bilardi/aws-docker-host
+  - bilardi/bookmarks
   - bilardi/custom-ai-agents
   - bilardi/diary
   - bilardi/etl-prototype
